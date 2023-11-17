@@ -6,6 +6,8 @@
 
 <div class="row">
 
+  <p><a class="btn btn-sm btn-primary" href="/users">Go Back</a></p>
+
   {% if user.image_url %}
   <div class="col-sm-2 col-6">
     <img src="{{ user.image_url }}"
@@ -27,6 +29,13 @@
               formmethod="POST">Delete
       </button>
     </form>
+    <h2 class="mt-4">Posts</h2>
+    <ul>
+      {%for post in posts%}
+      <li> <a href="/posts/{{ post.id }}">{{ post.title }}</a></li>
+      {%endfor%}
+    </ul>
+    <p><a class="btn btn-sm btn-primary" href="/users/{{user.id}}/posts/new">Add Post</a></p>
 
   </div>
 </div>
