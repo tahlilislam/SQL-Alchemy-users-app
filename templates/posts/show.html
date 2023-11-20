@@ -7,6 +7,17 @@
     <h1>{{post.title}}</h1>
     <p>{{post.content}}</p>
     <p>By <i>{{post.author.full_name()}}</i> on {{post.created_at}}</p>
+
+    {% if post.tags %}
+    <p>
+    <b>Tags:</b>
+    {% for tag in post.tags %}
+    <a href="/tags/{{ tag.id }}" class=" btn btn-sm btn-info">{{ tag.name }}</a>
+    {% endfor %}
+    </p>
+    {% endif %}
+
+
     <form>
         <button class="btn btn-outline-primary"
                 formmethod="GET"

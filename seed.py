@@ -1,6 +1,6 @@
 """Seed file to make sample data for blogly db."""
 
-from models import User, Post, db
+from models import User, Post, Tag, PostTag, db
 from app import app
 from datetime import datetime
 
@@ -12,7 +12,7 @@ with app.app_context():
     # If table isn't empty, empty it
     User.query.delete()
 
-    # Add pets
+    # Add users
     Alan = User(first_name='Alan', last_name='Aida',
                 image_url="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHByb2ZpbGUlMjBpbWFnZXN8ZW58MHx8MHx8fDA%3D")
     Joel = User(first_name='Joel', last_name='Burton',
@@ -50,4 +50,38 @@ with app.app_context():
         db.session.add_all([post1, post2, post3])
 
     # Commit to save all the posts
+    db.session.commit()
+
+    # If table isn't empty, empty it
+    Tag.query.delete()
+
+    #Add Tags
+    fun = Tag(name = '#Fun')
+    even_more = Tag(name = '#Even More')
+    bloop = Tag(name = '#bloop')
+
+    db.session.add_all([fun, even_more, bloop])
+    db.session.commit()
+
+    # Fetch all posts
+    all_posts = Post.query.all()
+
+     # Create a list to store PostTag objects
+    post_tags = []
+
+    # Loop through each post and assign a tag
+    for post in all_posts:
+        # for posts 3, 6, 9
+        if post.id % 3 == 0:
+            post_tags.append(PostTag(post_id=post.id, tag_id=bloop.id))
+        # for id 1,4,7
+        elif post.id % 3 == 1:
+            post_tags.append(PostTag(post_id=post.id, tag_id=fun.id))
+        else:
+            post_tags.append(PostTag(post_id=post.id, tag_id=even_more.id))
+
+    # Add PostTag objects to the session
+    db.session.add_all(post_tags)
+
+    # Commit to save the post-tag associations
     db.session.commit()

@@ -63,37 +63,107 @@ class Post(db.Model):
 
     author = db.relationship('User', backref='posts')
 
+    tags = db.relationship('Tag',
+                           secondary = 'post_tags',
+                           backref = 'posts')
 
-# class Pet(db.Model):
-#     """Pet."""
-#     __tablename__ = "pets"
+class Tag(db.Model):
+    """Tags for a post"""
 
-#     @classmethod
-#     def get_by_species(cls, species):
-#         return cls.query.filter_by(species=species).all()
+    __tablename__ = "tags"
 
-#     @classmethod
-#     def get_all_hungry(cls):
-#         return cls.query.filter(Pet.hunger > 20).all()
+    def __repr__(self):
+        return f"<tag id = {self.id}, tag name = {self.name}>"
 
-#     def __repr__(self):
-#         p = self
-#         return f"<Pet id = {p.id} name = {p.name} species ={p.species} hunger = {p.hunger}>"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20), nullable = False, unique = True)
+
+class PostTag(db.Model):
+    """Relationship table between a post and a tag"""
+
+    __tablename__ = "post_tags"
+
+    post_id = db.Column (db.Integer, db.ForeignKey('posts.id'), primary_key = True)
+    tag_id = db.Column (db.Integer, db.ForeignKey('tags.id'), primary_key = True)
+
+
+
+
+
+# class Employee(db.Model):
+#     """Employee."""
+
+#     __tablename__ = "employees"
 
 #     id = db.Column(db.Integer,
 #                    primary_key=True,
 #                    autoincrement=True)
-#     name = db.Column(db.String(50),
-#                      nullable=False,
-#                      unique=True)
-#     species = db.Column(db.String(30), nullable=True)
+#     name = db.Column(db.Text, nullable=False, unique=True)
+#     state = db.Column(db.Text, nullable=False, default='CA')
+#     dept_code = db.Column(
+#         db.Text,
+#         db.ForeignKey('departments.dept_code'))
 
-#     hunger = db.Column(db.Integer, nullable=False, default=20)
+#     dept = db.relationship('Department')
 
-#     def greet(self):
-#         return f"Hi, I am {self.name} the {self.species}"
+#     # direct navigation: emp -> employeeproject & back
+#     assignments = db.relationship('EmployeeProject',
+#                                   backref='employee')
 
-#     def feed(self, amt=20):
-#         """Update hunger based off of amt"""
-#         self.hunger -= amt
-#         self.hunger = max(self.hunger, 0)
+#     # direct navigation: emp -> project & back
+#     projects = db.relationship('Project',
+#                                secondary='employees_projects',
+#                                backref='employees')
+
+#     def __repr__(self):
+#         e = self
+#         return f"<Employee {e.id} {e.name} {e.state}>"
+
+# class Department(db.Model):
+#     """Department. A department has many employees."""
+
+#     __tablename__ = "departments"
+
+#     dept_code = db.Column(db.Text, primary_key=True)
+#     dept_name = db.Column(db.Text,
+#                           nullable=False,
+#                           unique=True)
+#     phone = db.Column(db.Text)
+
+#     employees = db.relationship('Employee')
+
+#     def __repr__(self):
+#         return f"<Department {self.dept_code} {self.dept_name}>"
+
+
+# class Project(db.Model):
+#     """Project. Employees can be assigned to this."""
+
+#     __tablename__ = "projects"
+
+#     proj_code = db.Column(db.Text, primary_key=True)
+#     proj_name = db.Column(db.Text,
+#                           nullable=False,
+#                           unique=True)
+
+#     # direct navigation: proj -> employeeproject & back
+#     # only a sql alchemy python side construct, not in table, schema, database
+#     assignments = db.relationship('EmployeeProject',
+#                                   backref='project')
+
+#     def __repr__(self):
+#         return f"<Project {self.proj_code} {self.proj_name}>"
+
+
+# class EmployeeProject(db.Model):
+#     """Mapping of an employee to a project."""
+
+#     __tablename__ = "employees_projects"
+
+#     emp_id = db.Column(db.Integer,
+#                        db.ForeignKey("employees.id"),
+#                        primary_key=True)
+#     proj_code = db.Column(db.Text,
+#                           db.ForeignKey("projects.proj_code"),
+#                           primary_key=True)
+#     role = db.Column(db.Text)
